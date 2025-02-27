@@ -1,0 +1,15 @@
+privilegeTargets:
+  Neos\Flow\Security\Authorization\Privilege\Method\MethodPrivilege:
+    'JvMTECH.AIToolkit:Generate':
+      matcher: 'method(JvMTECH\AIToolkit\Controller\GenerateController->(.*)Action())'
+    'JvMTECH.AIToolkit:Page':
+      matcher: 'method(JvMTECH\AIToolkit\Controller\PageController->(.*)Action())'
+roles:
+  'Neos.Neos:Editor':
+    privileges:
+      -
+        privilegeTarget: 'JvMTECH.AIToolkit:Generate'
+        permission: GRANT
+      -
+        privilegeTarget: 'JvMTECH.AIToolkit:Page'
+        permission: GRANT

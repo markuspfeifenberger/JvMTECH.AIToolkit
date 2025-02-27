@@ -1,0 +1,126 @@
+'JvMTECH.AIToolkit:Mixin.SEO':
+  abstract: true
+  properties:
+    aiToolkitMetaFocusKeyphrase:
+      type: string
+      ui:
+        label: i18n
+        inspector:
+          group: 'seometa'
+          position: 'before metaDescription'
+          editor: 'Neos.Neos/Inspector/Editors/TextFieldEditor'
+          editorOptions:
+            placeholder: i18n
+      validation:
+        'Neos.Neos/Validation/StringLengthValidator':
+          maximum: 80
+
+    metaDescription:
+      ui:
+        inspector:
+          editor: 'JvMTECH.AIToolkit/TextAreaEditor'
+          editorOptions:
+            dummy: false
+            debug: false
+            modelHandler: 'textToText'
+            modelPreset: 'openai-standard'
+            promptVariables:
+              targetLanguage: "${Configuration.setting('Neos.ContentRepository.contentDimensions.language.presets.' + documentNode.context.targetDimensions.language + '.label')}"
+              content: "${q(documentHtml).convertHtmlToMarkdown().get(0)}"
+            promptTemplate: |
+              # ROLE
+              You are an expert SEO copywriter specializing in meta descriptions that drive clicks and improve search rankings.
+              
+              # TASK
+              Create a compelling SEO meta description for the content provided below.
+            
+              # SPECIFICATIONS
+              - Length: Maximum 160 characters (including spaces)
+              - Style: Compelling, action-oriented, using active voice
+              - Content: Must accurately represent the source material
+              - Focus Keyphrase: Use "{node.properties.aiToolkitMetaFocusKeyphrase}" if available; otherwise use "{node.properties.title}"
+              - Language: Write in {targetLanguage}
+
+              # FORMAT REQUIREMENTS
+              Deliver the meta description as plain text only.
+              Do not include HTML tags, Markdown formatting, quotes, or explanatory notes.
+              Provide only the final meta description text.
+              
+              # SOURCE CONTENT
+              {content}
+            forceMaxLength: 160
+            forceMaxLengthAttempts: 3
+
+    metaKeywords:
+      ui:
+        inspector:
+          editor: 'JvMTECH.AIToolkit/TextAreaEditor'
+          editorOptions:
+            dummy: false
+            debug: false
+            modelHandler: 'textToText'
+            modelPreset: 'openai-standard'
+            promptVariables:
+              targetLanguage: "${Configuration.setting('Neos.ContentRepository.contentDimensions.language.presets.' + documentNode.context.targetDimensions.language + '.label')}"
+              content: "${q(documentHtml).convertHtmlToMarkdown().get(0)}"
+              currentValue: "${transientValues.metaKeywords ? transientValues.metaKeywords : q(node).property('metaKeywords')}"
+            promptTemplate: |
+              # TASK
+              Generate SEO meta keywords for a website based on the provided Markdown content.
+              
+              # INPUTS
+              - Current meta keywords: "{currentValue}"
+              
+              # REQUIREMENTS
+              - Create meta keywords in {targetLanguage}
+              - Character count: Minimum 50, maximum 160 characters
+              - Keywords should be relevant, descriptive, and search-optimized
+              - Format as comma-separated terms/phrases
+              - Maintain core topical focus from the content
+              
+              # OUTPUT FORMAT
+              Provide ONLY the final meta keywords text.
+              No explanations, HTML tags, or additional text.
+              
+              # CONTENT TO ANALYZE
+              {content}
+            forceMaxLength: 255
+            forceMaxLengthCut: 'word'
+
+'JvMTECH.AIToolkit:Mixin.ImageAlternativeText':
+  abstract: true
+  properties:
+    alternativeText:
+      options:
+        preset: 'image.alternativeText'
+      ui:
+        inspector:
+          editor: 'JvMTECH.AIToolkit/TextAreaEditor'
+          editorOptions:
+            modelHandler: 'imageToText'
+            modelPreset: 'openai-advanced'
+            promptVariables:
+              targetLanguage: "${Configuration.setting('Neos.ContentRepository.contentDimensions.language.presets.' + node.context.targetDimensions.language + '.label')}"
+              asset: "${transientValues.asset ? transientValues.asset : q(node).property('asset')}"
+            promptTemplate: |
+              # TASK
+              Create a concise, accessible alt text description for the uploaded image.
+              
+              # REQUIREMENTS
+              - Write in {targetLanguage}
+              - Length: 1-2 brief sentences (maximum 125 characters)
+              - Focus on the main subject and essential elements
+              - Include relevant actions, expressions, or context
+              - Be specific but avoid unnecessary details
+              - Omit phrases like "image of" or "picture showing"
+              - Consider the image's purpose in the website context
+              
+              # ACCESSIBILITY GUIDELINES
+              - Describe what's visually important, not every detail
+              - Include relevant colors only when significant
+              - Mention text visible in the image
+              - Describe the mood/emotion when relevant
+              
+              # OUTPUT FORMAT
+              Provide ONLY the alt text description.
+              No explanations, quotation marks, or additional commentary.

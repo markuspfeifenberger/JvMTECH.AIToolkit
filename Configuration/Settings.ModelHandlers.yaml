@@ -1,0 +1,13 @@
+JvMTECH:
+  AIToolkit:
+    modelHandlers:
+
+      textToText:
+        className: 'JvMTECH\AIToolkit\ModelHandlers\TextToTextModelHandler'
+        defaultOptions: []
+        overrideOptions: []
+
+      imageToText:
+        className: 'JvMTECH\AIToolkit\ModelHandlers\ImageToTextModelHandler'
+        defaultOptions: []
+        overrideOptions: []

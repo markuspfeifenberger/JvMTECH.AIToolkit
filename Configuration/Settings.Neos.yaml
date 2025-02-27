@@ -1,0 +1,16 @@
+Neos:
+  Neos:
+    Ui:
+      resources:
+        javascript:
+          'JvMTECH.AIToolkit:TextFieldEditor':
+            resource: resource://JvMTECH.AIToolkit/Public/TextFieldEditor/Plugin.js
+          'JvMTECH.AIToolkit:TextAreaEditor':
+            resource: resource://JvMTECH.AIToolkit/Public/TextAreaEditor/Plugin.js
+    fusion:
+      autoInclude:
+        JvMTECH.AIToolkit: true
+    userInterface:
+      translation:
+        autoInclude:
+          'JvMTECH.AIToolkit': ['Main', 'NodeTypes/*']

@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "build": "node build.js",
+    "watch": "node build.js --watch"
+  },
+  "neos": {
+    "buildTargetDirectory": "../../../Public/TextFieldEditor"
+  },
+  "devDependencies": {
+    "@neos-project/neos-ui-extensibility": "~8.3.0",
+    "@neos-project/build-essentials": "~8.2.0",
+    "lodash.unescape": "4.0.1",
+    "lucide-react": "0.468.0",
+    "esbuild": "~0.17.18"
+  }
+}

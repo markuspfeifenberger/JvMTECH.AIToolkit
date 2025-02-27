@@ -1,0 +1,24 @@
+JvMTECH:
+  AIToolkit:
+    modelPresets:
+
+      openai-standard:
+        className: 'JvMTECH\AIToolkit\ModelConnectors\OpenAIModelConnector'
+        apiKey: '' # Add your OpenAI API key here
+        model: 'gpt-3.5-turbo-0125' # Choose your model here
+
+      openai-advanced:
+        className: 'JvMTECH\AIToolkit\ModelConnectors\OpenAIModelConnector'
+        apiKey: '' # Add your OpenAI API key here
+        model: 'gpt-4o-mini' # Choose your model here
+
+      gemini-standard:
+        className: 'JvMTECH\AIToolkit\ModelConnectors\GeminiModelConnector'
+        apiKey: '' # Add your Google Gemini API key here
+        model: 'gemini-1.5-flash' # Choose your model here
+        generationConfig:
+          temperature: 1
+          topK: 40
+          topP: 0.95
+          maxOutputTokens: 16384
+          responseMimeType: "application/json"

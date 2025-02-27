@@ -1,0 +1,16 @@
+Neos:
+  Flow:
+    mvc:
+      routes:
+        'JvMTECH.AIToolkit':
+          position: 'before Neos.Neos'
+
+    security:
+      authentication:
+        providers:
+          'Neos.Neos:Backend':
+            requestPatterns:
+              'JvMTECH.AIToolkit:Controller':
+                pattern: 'ControllerObjectName'
+                patternOptions:
+                  controllerObjectNamePattern: 'JvMTECH\AIToolkit\Controller\.*'

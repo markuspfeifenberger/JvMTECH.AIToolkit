@@ -1,0 +1,25 @@
+- name: 'AI Toolkit - Generate'
+  uriPattern: 'ai-toolkit/generate/{@action}'
+  defaults:
+    '@package': 'JvMTECH.AIToolkit'
+    '@controller': 'Generate'
+  appendExceedingArguments: true
+  httpMethods: [ 'POST' ]
+
+- name: 'AI Toolkit - Execute'
+  uriPattern: 'ai-toolkit/execute/{handlerName}'
+  defaults:
+    '@package': 'JvMTECH.AIToolkit'
+    '@controller': 'Generate'
+    '@action': 'execute'
+  appendExceedingArguments: true
+  httpMethods: [ 'POST' ]
+
+- name: 'AI Toolkit - Page'
+  uriPattern: 'ai-toolkit/page/{@action}'
+  defaults:
+    '@package':    'JvMTECH.AIToolkit'
+    '@controller': 'Page'
+    '@format':     'html'
+    '@action':     'renderPreviewPage'
+  appendExceedingArguments: true

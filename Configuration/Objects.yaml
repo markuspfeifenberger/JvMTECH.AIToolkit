@@ -1,0 +1,4 @@
+JvMTECH\AIToolkit\Controller\GenerateController:
+  properties:
+    logger:
+      object: 'JvMTECH\AIToolkit\Logger\DummyLogger'

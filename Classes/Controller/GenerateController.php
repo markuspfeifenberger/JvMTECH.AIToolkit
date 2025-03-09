@@ -61,33 +61,59 @@ class GenerateController extends ActionController
 
     public function executeAction(string $handlerName)
     {
+        // Get base variables to build eel context
+
         $node = null;
+        $q = null;
         if ($this->getRequestArgument('nodeContextPath')) {
             /** @var NodeInterface $node */
             $node = $this->getNodeWithContextPath($this->getRequestArgument('nodeContextPath'));
+            $q = new FlowQuery([$node]);
         }
 
-        $promptVariables = [];
+        $documentHtml = null;
+        if ($this->getRequestArgument('nodeUri')) {
+            $documentHtml = $this->fetchDocumentHtml($this->getRequestArgument('nodeUri'), $this->request->getHttpRequest()->getCookieParams());
+        }
 
-        $q = new FlowQuery([$node]);
+        $documentNode = null;
+        if ($node) {
+            $documentNode = $node->getNodeType()->isOfType('Neos.Neos:Document') ? $node : $q->parent('[instanceof Neos.Neos:Document]')->get(0);
+        }
+
+        $site = $q ? $q->parents('[instanceof Neos.Neos:Document]')->last()->get(0) : null;
+
         $eelContextVariables = [
-            'documentHtml' => $this->fetchDocumentHtml($this->getRequestArgument('nodeUri'), $this->request->getHttpRequest()->getCookieParams()),
-            'documentNode' => $node ? ($node->getNodeType()->isOfType('Neos.Neos:Document') ? $node : $q->parent('[instanceof Neos.Neos:Document]')->get(0)) : null,
+            'documentHtml' => $documentHtml,
+            'documentNode' => $documentNode,
             'node' => $node ?? null,
-            'site' => $node ? $q->parents('[instanceof Neos.Neos:Document]')->last()->get(0) : null,
+            'site' => $site,
         ];
+
+        // Add transient values to eel context
 
         foreach ($this->getRequestArgument('transientValues') ?? [] as $key => $value) {
             if (isset($value['value']['__identity'])) {
                 $value = $this->assetRepository->findByIdentifier($value['value']['__identity']);
-            } else if (is_array($value) && isset($value['value'])) {
+            } elseif (is_array($value) && isset($value['value'])) {
                 $value = $value['value'];
             }
             $eelContextVariables['transientValues'][$key] = $value;
             $eelContextVariables['transientValues.' . $key] = $value;
         }
 
+        // Evaluate prompt variables
+
+        $promptVariables = [];
+
         foreach ($this->getRequestArgument('promptVariables') ?? [] as $promptVariableName => $eelExpression) {
+            $eelExpression = trim($eelExpression);
+
+            if (strpos($eelExpression, '${') !== 0) {
+                $promptVariables[$promptVariableName] = $eelExpression;
+                continue;
+            }
+
             $eelResult = Utility::evaluateEelExpression(
                 $eelExpression,
                 $this->eelEvaluator,
@@ -106,6 +132,8 @@ class GenerateController extends ActionController
         $promptVariables = array_merge($promptVariables, $overrideOptions);
 
         $overrideOptions = array_merge($eelContextVariables, $overrideOptions);
+
+        // Execute model handler
 
         try {
             $modelHandler = $this->modelHandlerFactory->create($handlerName, $this->modelConnectorFactory,

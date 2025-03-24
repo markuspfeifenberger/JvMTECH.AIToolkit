@@ -20,8 +20,8 @@ composer require jvmtech/ai-toolkit
 JvMTECH:
   AIToolkit:
     modelPresets:
-      gemini:
-        apiKey: 'my-gemini-api-key'
+      gemini-standard:
+        'my-gemini-api-key'
 ```
 
 ## NodeType Configuration Contcept
@@ -40,7 +40,7 @@ JvMTECH:
 
   ```yaml
   modelHandler: 'textToText'
-  modelPreset: 'gemini'
+  modelPreset: 'gemini-standard'
   ```
 - By defining the "**Prompt Variables**" values we prepare the data which can be used by the AI model - in the "Prompt" but also directly in the request to the AI model.
 
